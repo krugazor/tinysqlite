@@ -3,6 +3,6 @@ import PackageDescription
 let package = Package(
     name: "tinysqlite",
     dependencies: [
-    	.Package(url: "./System/sqlite3", majorVersion:0)
+    	.Package(url: "https://github.com/krugazor/sqlite3-swift3", majorVersion:0)
     ]
 )
