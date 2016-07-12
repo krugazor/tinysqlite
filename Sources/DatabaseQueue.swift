@@ -8,7 +8,7 @@
 import Foundation
 
 // TODO: Allow queues working on different databases at the same time
-private let _queue: dispatch_queue_t = dispatch_queue_create("TinySQLiteQueue", nil)
+private let _queue: DispatchQueue = DispatchQueue(label: "TinySQLiteQueue")
 
 public class DatabaseQueue {
     
@@ -39,7 +39,7 @@ public class DatabaseQueue {
         var thrownError: ErrorProtocol?
         
         /* Run the query in a sequential queue to avoid threading related problems */
-        dispatch_sync(_queue) { () -> Void in
+        _queue.sync() { () -> Void in
             
             /* Open the database and execute the block. Pass on any errors thrown */
             do {

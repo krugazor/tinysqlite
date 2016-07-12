@@ -467,7 +467,7 @@ extension Statement {
     
     /** Returns a string for the column given by the index */
     public func nsstringForColumn(index: Int32) -> NSString? {
-        return NSString(bytes: sqlite3_column_text(handle, index), length: Int(sqlite3_column_bytes(handle, index)), encoding: NSUTF8StringEncoding)
+        return NSString(bytes: sqlite3_column_text(handle, index), length: Int(sqlite3_column_bytes(handle, index)), encoding: String.Encoding.utf8.rawValue)
     }
     
     /** Returns a number for the column given by the index */
