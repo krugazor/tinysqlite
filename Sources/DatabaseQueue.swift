@@ -36,7 +36,7 @@ public class DatabaseQueue {
     
     /** Execute synchronous queries on the database in a sequential queue */
     public func database(block: ((database: DatabaseConnection) throws -> Void)) throws {
-        var thrownError: ErrorProtocol?
+        var thrownError: Error?
         
         /* Run the query in a sequential queue to avoid threading related problems */
         _queue.sync() { () -> Void in

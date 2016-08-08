@@ -173,7 +173,7 @@ public class Statement {
         }
         
         if bindCount != totalBindCount {
-            throw Error.NumberOfBindings
+            throw SQLError.NumberOfBindings
         }
     }
     

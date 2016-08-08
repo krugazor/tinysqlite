@@ -42,7 +42,7 @@ public typealias NamedSQLiteValues = Dictionary<String, SQLiteValue?>
 
 // MARK: -
 
-public enum Error: Int32, ErrorProtocol, CustomStringConvertible {
+public enum SQLError: Int32, Error, CustomStringConvertible {
     case OK                 = 0
     case Error
     case InternalError
@@ -163,7 +163,7 @@ internal struct SQLiteResultHandler {
     
     static func verifyResultCode(resultCode: Int32, forHandle handle: OpaquePointer) throws {
         guard isSuccess(resultCode: resultCode) else {
-            throw Error(rawValue: resultCode)!
+            throw SQLError(rawValue: resultCode)!
         }
     }
 }
