@@ -6,11 +6,7 @@
 //
 
 import Foundation
-#if os(Linux)
 import sqlite3
-#else
-import sqlite3m
-#endif
 
 // MARK: - Setup SQLiteValue protocol for all supported  datatypes
 

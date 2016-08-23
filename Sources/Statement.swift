@@ -453,7 +453,11 @@ extension Statement {
         if typeForColumn(index: index) == .Null {
             return nil
         }
+        #if os(Linux)
         return Data(bytes: sqlite3_column_blob(handle, index), count: Int(sqlite3_column_bytes(handle, index)))
+        #else
+        return dataForColumn(index: index) as Data?
+        #endif
     }
 
     /** Returns an date for the column given by the index */
