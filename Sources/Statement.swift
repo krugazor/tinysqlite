@@ -448,6 +448,14 @@ extension Statement {
         return NSData(bytes: sqlite3_column_blob(handle, index), length: Int(sqlite3_column_bytes(handle, index)))
     }
 
+    /** Returns a data for the column given by the index */
+    public func sdataForColumn(index: Int32) -> Data? {
+        if typeForColumn(index: index) == .Null {
+            return nil
+        }
+        return Data(bytes: sqlite3_column_blob(handle, index), count: Int(sqlite3_column_bytes(handle, index)))
+    }
+
     /** Returns an date for the column given by the index */
     public func dateForColumn(index: Int32) -> NSDate? {
         if typeForColumn(index: index) == .Null {
@@ -593,6 +601,11 @@ extension Statement {
     /** Returns data for the column given by the column name */
     public func dataForColumn(name: String) -> NSData? {
         return dataForColumn(index: nameToIndexMapping[name]!)
+    }
+
+    /** Returns data for the column given by the column name */
+    public func sdataForColumn(name: String) -> Data? {
+        return sdataForColumn(index: nameToIndexMapping[name]!)
     }
 
     /** Returns a date for the column given by the column name */
