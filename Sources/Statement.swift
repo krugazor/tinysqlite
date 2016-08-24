@@ -7,6 +7,7 @@
 
 import sqlite3
 import Foundation
+import CoreFoundation
 
 public enum SQLiteDatatype: String {
     case Text       = "TEXT"
@@ -254,10 +255,10 @@ public class Statement {
     private func bindNumber(numberValue: NSNumber, forIndex index: Int32) throws -> Int32 {
 
         // let typeString = String.fromCString(numberValue.objCType)
-        let typeString = String(numberValue.objCType)
+        // let typeString = String(numberValue.objCType)
 
         let result: Int32
-
+	/*
         switch typeString {
         case "c":
             result = sqlite3_bind_int64(handle, index, Int64(numberValue.int8Value))
@@ -286,6 +287,64 @@ public class Statement {
         default:
             result = sqlite3_bind_text(handle, index, numberValue.description, -1, SQLITE_TRANSIENT)
         }
+	*/
+
+	switch(Int(numberValue._cfTypeID)) { // weird, but true
+			case kCFNumberSInt8Type :
+				result = sqlite3_bind_int64(handle, index, Int64(numberValue.int8Value))
+				break;
+			case kCFNumberSInt16Type : 
+				result = sqlite3_bind_int64(handle, index, Int64(numberValue.int16Value))
+				break;
+			case kCFNumberSInt32Type : 
+				result = sqlite3_bind_int64(handle, index, Int64(numberValue.int32Value))
+				break;
+			case kCFNumberSInt64Type : 
+				result = sqlite3_bind_int64(handle, index, numberValue.int64Value)
+				break;
+			case kCFNumberFloat32Type : 
+				result = sqlite3_bind_double(handle, index, numberValue.doubleValue)
+				break;
+			case kCFNumberFloat64Type : 
+				result = sqlite3_bind_double(handle, index, numberValue.doubleValue)
+				break;
+			case kCFNumberCharType : 
+				result = sqlite3_bind_int64(handle, index, Int64(numberValue.int8Value))
+				break;
+			case kCFNumberShortType : 
+				result = sqlite3_bind_int64(handle, index, Int64(numberValue.uint16Value))
+				break;
+			case kCFNumberIntType : 
+				result = sqlite3_bind_int64(handle, index, Int64(numberValue.intValue))
+        		break;
+			case kCFNumberLongType : 
+				result = sqlite3_bind_int64(handle, index, Int64(numberValue.uint32Value))
+				break;
+			case kCFNumberLongLongType : 
+				result = sqlite3_bind_int64(handle, index, Int64(numberValue.uint64Value))
+				break;
+			case kCFNumberFloatType : 
+				result = sqlite3_bind_double(handle, index, numberValue.doubleValue)
+				break;
+			case kCFNumberDoubleType : 
+				result = sqlite3_bind_double(handle, index, numberValue.doubleValue)
+				break;
+			case kCFNumberCFIndexType : 
+				result = sqlite3_bind_text(handle, index, numberValue.description, -1, SQLITE_TRANSIENT) // todo
+				break;
+			case kCFNumberNSIntegerType : 
+				result = sqlite3_bind_text(handle, index, numberValue.description, -1, SQLITE_TRANSIENT) // todo
+				break;
+			case kCFNumberCGFloatType : 
+				result = sqlite3_bind_double(handle, index, numberValue.doubleValue)
+				break;
+			case kCFNumberMaxType : 
+				result = sqlite3_bind_text(handle, index, numberValue.description, -1, SQLITE_TRANSIENT) // todo
+				break;
+       	    default:
+                result = sqlite3_bind_text(handle, index, numberValue.description, -1, SQLITE_TRANSIENT)
+
+		}
 
         return result
     }
