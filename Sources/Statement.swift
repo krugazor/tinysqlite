@@ -18,7 +18,7 @@ public enum SQLiteDatatype: String {
 }
 
 public class Statement {
-    private var handle: OpaquePointer?
+    var handle: OpaquePointer?
     var query: String
 
     var isBusy: Bool {
@@ -254,7 +254,7 @@ public class Statement {
     private func bindNumber(numberValue: NSNumber, forIndex index: Int32) throws -> Int32 {
 
         // let typeString = String.fromCString(numberValue.objCType)
-        let typeString = String(numberValue.objCType)
+        let typeString = String(describing: numberValue.objCType)
 
         let result: Int32
 
@@ -300,7 +300,7 @@ extension Statement {
 
     /** Returns the datatype for the column given by an index */
     public func typeForColumn(index: Int32) -> SQLiteDatatype? {
-        switch sqlite3_column_type(handle, index) {
+        switch sqlite3_column_type(self.handle, index) {
         case SQLITE_INTEGER:
             return .Integer
         case SQLITE_FLOAT:
@@ -318,7 +318,7 @@ extension Statement {
 
     /** Returns a value for the column given by the index based on the columns datatype */
     public func valueForColumn(index: Int32) -> SQLiteValue? {
-        let columnType = sqlite3_column_type(handle, index)
+        let columnType = sqlite3_column_type(self.handle, index)
 
         switch columnType {
         case SQLITE_INTEGER:
@@ -349,7 +349,7 @@ extension Statement {
         if typeForColumn(index: index) == .Null {
             return nil
         }
-        return sqlite3_column_int64(handle, index)
+        return sqlite3_column_int64(self.handle, index)
     }
 
     /** Returns a 32-bit integer for the column given by the index */
@@ -421,7 +421,7 @@ extension Statement {
         if typeForColumn(index: index) == .Null {
             return nil
         }
-        return sqlite3_column_double(handle, index)
+        return sqlite3_column_double(self.handle, index)
     }
 
     /** Returns a float for the column given by the index */
@@ -445,7 +445,7 @@ extension Statement {
         if typeForColumn(index: index) == .Null {
             return nil
         }
-        return NSData(bytes: sqlite3_column_blob(handle, index), length: Int(sqlite3_column_bytes(handle, index)))
+        return NSData(bytes: sqlite3_column_blob(self.handle, index), length: Int(sqlite3_column_bytes(self.handle, index)))
     }
 
     /** Returns a data for the column given by the index */
@@ -470,7 +470,11 @@ extension Statement {
 
     /** Returns a string for the column given by the index */
     public func stringForColumn(index: Int32) -> String? {
-        return String(nsstringForColumn(index: index))
+        if let r = nsstringForColumn(index: index) {
+            return String(describing: r)
+        } else {
+            return nil
+        }
     }
 
     /** Returns a character for the column given by the index */
@@ -480,12 +484,12 @@ extension Statement {
 
     /** Returns a string for the column given by the index */
     public func nsstringForColumn(index: Int32) -> NSString? {
-        return NSString(bytes: sqlite3_column_text(handle, index), length: Int(sqlite3_column_bytes(handle, index)), encoding: String.Encoding.utf8.rawValue)
+        return NSString(bytes: sqlite3_column_text(self.handle, index), length: Int(sqlite3_column_bytes(self.handle, index)), encoding: String.Encoding.utf8.rawValue)
     }
 
     /** Returns a number for the column given by the index */
     public func numberForColumn(index: Int32) -> NSNumber? {
-        switch sqlite3_column_type(handle, index) {
+        switch sqlite3_column_type(self.handle, index) {
         case SQLITE_INTEGER:
             return NSNumber(value: integerForColumn(index: index) ?? 0)
         case SQLITE_FLOAT:
@@ -512,7 +516,7 @@ extension Statement {
     public var dictionary: NamedSQLiteValues {
         var dictionary: NamedSQLiteValues = [:]
 
-        for i in 0..<sqlite3_column_count(handle) {
+        for i in 0..<sqlite3_column_count(self.handle) {
             dictionary[indexToNameMapping[i]!] = valueForColumn(index: i)
         }
 

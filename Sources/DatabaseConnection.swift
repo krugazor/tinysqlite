@@ -177,7 +177,7 @@ internal let SQLITE_TRANSIENT = unsafeBitCast(-1, to: sqlite3_destructor_type.se
 /** Responsible for opening and closing database connections, executing queries, and managing transactions */
 public class DatabaseConnection {
     
-    private var handle: OpaquePointer? = nil
+    var handle: OpaquePointer? = nil
     private let path: String
     
     public var isOpen: Bool = false
@@ -243,17 +243,17 @@ extension DatabaseConnection {
     
     /** Number of rows affected by INSERT, UPDATE, or DELETE since the database was opened */
     public func changes() -> Int {
-        return Int(sqlite3_changes(handle))
+        return Int(sqlite3_changes(self.handle))
     }
     
     /** Total number of rows affected by INSERT, UPDATE, or DELETE since the database was opened */
     public func totalChanges() -> Int {
-        return Int(sqlite3_total_changes(handle))
+        return Int(sqlite3_total_changes(self.handle))
     }
     
     /** Interrupts any pending database operations */
     public func interrupt() {
-        sqlite3_interrupt(handle)
+        sqlite3_interrupt(self.handle)
     }
 }
 

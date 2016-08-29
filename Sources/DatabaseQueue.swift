@@ -26,12 +26,12 @@ public class DatabaseQueue {
     }
 
     /** Execute a synchronous transaction on the database in a sequential queue */
-    public func transaction(block: ((database: DatabaseConnection) throws -> Void)) throws {
+    public func transaction(block: ((_ database: DatabaseConnection) throws -> Void)) throws {
         try database { (database) -> Void in
             /* If an error occurs, rollback the transaction and rethrow the error */
             do {
                 try database.beginTransaction()
-                try block(database: database)
+                try block(database)
                 try database.endTransaction()
             } catch let error {
                 try database.rollback()
@@ -41,7 +41,7 @@ public class DatabaseQueue {
     }
 
     /** Execute synchronous queries on the database in a sequential queue */
-    public func database(block: ((database: DatabaseConnection) throws -> Void)) throws {
+    public func database(block: ((_ database: DatabaseConnection) throws -> Void)) throws {
         var thrownError: Error?
 
         /* Run the query in a sequential queue to avoid threading related problems */
@@ -76,7 +76,7 @@ public class DatabaseQueue {
                     try! self.database.close()
                 }
 
-                try block(database: self.database)
+                try block(self.database)
             } catch let error {
                 thrownError = error
             }
