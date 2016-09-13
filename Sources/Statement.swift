@@ -257,37 +257,8 @@ public class Statement {
         // let typeString = String.fromCString(numberValue.objCType)
         let typeString = String(describing: numberValue.objCType)
         let result: Int32
-	/*
-        switch typeString {
-        case "c":
-            result = sqlite3_bind_int64(handle, index, Int64(numberValue.int8Value))
-        case "i":
-            result = sqlite3_bind_int64(handle, index, Int64(numberValue.intValue))
-        case "s":
-            result = sqlite3_bind_int64(handle, index, Int64(numberValue.int16Value))
-        case "l":
-            result = sqlite3_bind_int64(handle, index, Int64(numberValue.int32Value))
-        case "q":
-            result = sqlite3_bind_int64(handle, index, numberValue.int64Value)
-        case "C":
-            result = sqlite3_bind_int64(handle, index, Int64(numberValue.int8Value))
-        case "I":
-            result = sqlite3_bind_int64(handle, index, Int64(numberValue.uint32Value))
-        case "S":
-            result = sqlite3_bind_int64(handle, index, Int64(numberValue.uint16Value))
-        case "L":
-            result = sqlite3_bind_int64(handle, index, Int64(numberValue.uint32Value))
-        case "Q":
-            result = sqlite3_bind_int64(handle, index, Int64(numberValue.uint64Value))
-        case "B":
-            result = sqlite3_bind_int64(handle, index, Int64(numberValue.boolValue ? 1 : 0))
-        case "f", "d":
-            result = sqlite3_bind_double(handle, index, numberValue.doubleValue)
-        default:
-            result = sqlite3_bind_text(handle, index, numberValue.description, -1, SQLITE_TRANSIENT)
-        }
-	*/
 
+        #if os(Linux)
 	switch(Int(numberValue._cfTypeID)) { // weird, but true
 			case kCFNumberSInt8Type :
 				result = sqlite3_bind_int64(handle, index, Int64(numberValue.int8Value))
@@ -344,6 +315,36 @@ public class Statement {
                 result = sqlite3_bind_text(handle, index, numberValue.description, -1, SQLITE_TRANSIENT)
 
 		}
+            #else
+            switch typeString {
+            case "c":
+                result = sqlite3_bind_int64(handle, index, Int64(numberValue.int8Value))
+            case "i":
+                result = sqlite3_bind_int64(handle, index, Int64(numberValue.intValue))
+            case "s":
+                result = sqlite3_bind_int64(handle, index, Int64(numberValue.int16Value))
+            case "l":
+                result = sqlite3_bind_int64(handle, index, Int64(numberValue.int32Value))
+            case "q":
+                result = sqlite3_bind_int64(handle, index, numberValue.int64Value)
+            case "C":
+                result = sqlite3_bind_int64(handle, index, Int64(numberValue.int8Value))
+            case "I":
+                result = sqlite3_bind_int64(handle, index, Int64(numberValue.uint32Value))
+            case "S":
+                result = sqlite3_bind_int64(handle, index, Int64(numberValue.uint16Value))
+            case "L":
+                result = sqlite3_bind_int64(handle, index, Int64(numberValue.uint32Value))
+            case "Q":
+                result = sqlite3_bind_int64(handle, index, Int64(numberValue.uint64Value))
+            case "B":
+                result = sqlite3_bind_int64(handle, index, Int64(numberValue.boolValue ? 1 : 0))
+            case "f", "d":
+                result = sqlite3_bind_double(handle, index, numberValue.doubleValue)
+            default:
+                result = sqlite3_bind_text(handle, index, numberValue.description, -1, SQLITE_TRANSIENT)
+            }
+            #endif
 
         return result
     }
