@@ -9,12 +9,7 @@ import Foundation
 import Dispatch
 
 // TODO: Allow queues working on different databases at the same time
-#if os(Linux)
-private let _queue: dispatch_queue_t = dispatch_queue_create("TinySQLiteQueue",
-                                DISPATCH_QUEUE_SERIAL)
-#else
 private let _queue: DispatchQueue = DispatchQueue(label: "TinySQLiteQueue")
-#endif
 
 public class DatabaseQueue {
 
@@ -45,26 +40,6 @@ public class DatabaseQueue {
         var thrownError: Error?
 
         /* Run the query in a sequential queue to avoid threading related problems */
-        #if os(Linux)
-        dispatch_barrier_sync(_queue,
-          { () -> Void in
-
-              /* Open the database and execute the block. Pass on any errors thrown */
-              do {
-                  try self.database.open()
-
-                  /* Close the database when leaving this scope */
-                  defer {
-                      try! self.database.close()
-                  }
-
-                  try block(database: self.database)
-              } catch let error {
-                  thrownError = error
-              }
-          }
-        )
-        #else
         _queue.sync() { () -> Void in
 
             /* Open the database and execute the block. Pass on any errors thrown */
@@ -81,7 +56,6 @@ public class DatabaseQueue {
                 thrownError = error
             }
         }
-        #endif
         /* If an error was thrown during execution, rethrow it */
         // TODO: Improve the process of passing along the error
         guard thrownError == nil else {
