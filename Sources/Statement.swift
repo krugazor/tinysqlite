@@ -56,7 +56,7 @@ public class Statement {
     }
 
     /** Next row in results */
-    public func step() throws -> Bool {
+    @discardableResult public func step() throws -> Bool {
         let result = sqlite3_step(handle)
 
         try SQLiteResultHandler.verifyResultCode(resultCode: result, forHandle: handle!)
@@ -101,7 +101,7 @@ public class Statement {
 
      - returns:              `self`
      */
-    public func executeUpdate(namedValues: NamedSQLiteValues) throws -> Statement {
+    @discardableResult public func executeUpdate(namedValues: NamedSQLiteValues) throws -> Statement {
         try execute(namedValues: namedValues)
         try step()
         return self
@@ -115,7 +115,7 @@ public class Statement {
 
      - returns:              `self`
      */
-    public func execute(namedValues: NamedSQLiteValues) throws -> Statement {
+    @discardableResult public func execute(namedValues: NamedSQLiteValues) throws -> Statement {
         try bind(namedValues: namedValues)
         return self
     }
@@ -128,7 +128,7 @@ public class Statement {
 
      - returns:          `self`
      */
-    public func execute(values: SQLiteValues = []) throws -> Statement {
+    @discardableResult public func execute(values: SQLiteValues = []) throws -> Statement {
         try bind(values: values)
         return self
     }
