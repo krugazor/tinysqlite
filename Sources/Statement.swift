@@ -255,7 +255,6 @@ public class Statement {
     private func bindNumber(numberValue: NSNumber, forIndex index: Int32) throws -> Int32 {
 
         // let typeString = String.fromCString(numberValue.objCType)
-        let typeString = String(describing: numberValue.objCType)
         let result: Int32
 
         #if os(Linux)
@@ -316,6 +315,7 @@ public class Statement {
 
 		}
             #else
+        	let typeString = String(describing: numberValue.objCType)
             switch typeString {
             case "c":
                 result = sqlite3_bind_int64(handle, index, Int64(numberValue.int8Value))
