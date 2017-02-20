@@ -195,6 +195,9 @@ public class Statement {
         case let dateValue as NSDate:
             result = sqlite3_bind_double(handle, index, dateValue.timeIntervalSince1970)
 
+        case let dateValue as Date:
+            result = sqlite3_bind_double(handle, index, dateValue.timeIntervalSince1970)
+            
         case let dataValue as NSData:
             if dataValue.length == 0 {
                 print("[ WARNING: Data values with zero bytes are treated as NULL by SQLite ]")
@@ -527,6 +530,14 @@ extension Statement {
         return doubleForColumn(index: index) != nil ? NSDate(timeIntervalSince1970: doubleForColumn(index: index)!) : nil
     }
 
+    /** Returns an date for the column given by the index */
+    public func sdateForColumn(index: Int32) -> Date? {
+        if typeForColumn(index: index) == .Null {
+            return nil
+        }
+        return doubleForColumn(index: index) != nil ? Date(timeIntervalSince1970: doubleForColumn(index: index)!) : nil
+    }
+    
     /** Returns a string for the column given by the index */
     public func stringForColumn(index: Int32) -> String? {
         if let r = nsstringForColumn(index: index) {
@@ -680,6 +691,11 @@ extension Statement {
         return dateForColumn(index: nameToIndexMapping[name]!)
     }
 
+    /** Returns a date for the column given by the column name */
+    public func sdateForColumn(name: String) -> Date? {
+        return sdateForColumn(index: nameToIndexMapping[name]!)
+    }
+    
     /** Returns a string for the column given by the column name */
     public func stringForColumn(name: String) -> String? {
         return stringForColumn(index: nameToIndexMapping[name]!)

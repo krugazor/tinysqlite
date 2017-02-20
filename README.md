@@ -24,7 +24,7 @@ A lightweight SQLite wrapper written in Swift
 - [x] Double
 - [x] NSString
 - [x] NSData
-- [x] NSDate (represented as UNIX timestamps)
+- [x] NSDate/Date (represented as UNIX timestamps)
 - [x] NSNumber
 
 ## Usage

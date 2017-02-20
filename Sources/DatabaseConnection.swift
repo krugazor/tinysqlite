@@ -35,6 +35,7 @@ extension Double: SQLiteValue {}
 
 extension NSData: SQLiteValue {}
 extension NSDate: SQLiteValue {}
+extension Date: SQLiteValue {}
 extension NSNumber: SQLiteValue {}
 
 public typealias SQLiteValues = Array<SQLiteValue?>
