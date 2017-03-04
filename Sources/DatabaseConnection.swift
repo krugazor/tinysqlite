@@ -34,6 +34,7 @@ extension Float: SQLiteValue {}
 extension Double: SQLiteValue {}
 
 extension NSData: SQLiteValue {}
+extension Data: SQLiteValue {}
 extension NSDate: SQLiteValue {}
 extension Date: SQLiteValue {}
 extension NSNumber: SQLiteValue {}

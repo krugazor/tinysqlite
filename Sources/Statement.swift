@@ -204,6 +204,15 @@ public class Statement {
             }
             result = sqlite3_bind_blob(handle, index, dataValue.bytes, Int32(dataValue.length), SQLITE_TRANSIENT)
 
+        case let dataValue as Data:
+            if dataValue.count == 0 {
+                print("[ WARNING: Data values with zero bytes are treated as NULL by SQLite ]")
+            }
+            result = dataValue.withUnsafeBytes({ (pointer) -> Int32 in
+                return sqlite3_bind_blob(handle, index, pointer, Int32(dataValue.count), SQLITE_TRANSIENT)
+            })
+            
+            
         case let numberValue as NSNumber:
             result = try bindNumber(numberValue: numberValue, forIndex: index)
 
